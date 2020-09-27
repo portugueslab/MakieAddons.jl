@@ -1,0 +1,7 @@
+name = "MakieAddons"
+uuid = "52fbd791-3f5a-45c5-ac58-5605eeed9c72"
+authors = ["vilim <vilim@neuro.mpg.de>"]
+version = "0.1.0"
+
+[deps]
+AbstractPlotting = "537997a7-5e4e-5d89-9595-2241ea00577e"
