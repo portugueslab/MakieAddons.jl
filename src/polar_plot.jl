@@ -5,6 +5,7 @@ Polar plot on a MakieLayout LAxis
 text size currently in data coordinates
 """
 function polar_plot!(ax::LAxis, θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1};
+        plot_type = lines!,
         n_segments=8, textsize=0.05, kwargs...) where {T1, T2}
     
     limits = extrema(r)
@@ -47,7 +48,8 @@ function polar_plot!(ax::LAxis, θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1
     end
     
     linesegments!(ax, points_grid, color=RGB(0.8, 0.8, 0.8))
-    plot!(ax, real.(points_r), imag.(points_r); kwargs...)
+
+    plottype(ax, real.(points_r), imag.(points_r); kwargs...)
     
     radius_labels = lift(tickvalues) do tv
         texts = MakieLayout.linearly_spaced_tick_labels(tv)
