@@ -4,8 +4,8 @@ const τ = 2π
 Polar plot on a MakieLayout LAxis
 text size currently in data coordinates
 """
-function polar_plot!(ax::LAxis, θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1};
-        plot_type = lines!,
+function polar_plot!(ax::LAxis,  θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1};
+        plottype = lines!,
         n_segments=8, textsize=0.05, kwargs...) where {T1, T2}
     
     limits = extrema(r)
@@ -52,7 +52,7 @@ function polar_plot!(ax::LAxis, θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1
     plottype(ax, real.(points_r), imag.(points_r); kwargs...)
     
     radius_labels = lift(tickvalues) do tv
-        texts = MakieLayout.linearly_spaced_tick_labels(tv)
+        texts = MakieLayout.get_ticklabels(AbstractPlotting.Automatic(), tv)
         [
             (l,
             Point2f0(t, -textsize/2))
@@ -72,16 +72,9 @@ function polar_plot!(ax::LAxis, θ::AbstractArray{T1, 1}, r::AbstractArray{T2, 1
         
     end
     
-    annotations!(ax, radius_labels, textsize=textsize, align=:top)
-    annotations!(ax, angle_labels, textsize=textsize, align=(:center, :center))
+    # annotations!(ax, radius_labels, textsize=textsize, align=:top)
+    # annotations!(ax, angle_labels, textsize=textsize, align=(:center, :center))
     
-    hidexdecorations!(ax)
-    hideydecorations!(ax)
-    ax.xgridvisible = false
-    ax.ygridvisible = false
+    hidealldecorations!(ax)
     ax.aspect = DataAspect()
-    ax.topspinevisible = false
-    ax.leftspinevisible = false
-    ax.rightspinevisible = false
-    ax.bottomspinevisible = false
 end

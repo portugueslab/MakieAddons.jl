@@ -39,7 +39,7 @@ function browse_stack(stack; browse_dims = tuple(), kwargs...)
 
     heatmap!(im_axis, current_slice; kwargs...)
     im_axis.aspect = DataAspect()
-    hide_all_decorations!(im_axis)
+    hidealldecorations!(im_axis)
 
     display(sc)
     return sc, layout, [sl.value for sl in sliders]
