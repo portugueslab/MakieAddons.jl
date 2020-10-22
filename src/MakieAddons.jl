@@ -4,9 +4,10 @@ using AbstractPlotting
 using AbstractPlotting.MakieLayout
 using Colors
 
-include("constants.jl")
+include("colors.jl")
 include("utilities.jl")
 include("polar_plot.jl")
+include("extra_plots.jl")
 include("interaction.jl")
 include("stack_browser.jl")
 include("annotation_fix.jl")

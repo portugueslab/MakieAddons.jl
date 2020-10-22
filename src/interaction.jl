@@ -48,3 +48,83 @@ function add_rectangle_selector!(im_axis, rect_node=Node([0f0, 0f0, 0f0, 0f0]); 
     )
     return draw_rect
 end
+
+function ValueSlider(scene, grid_layout, grid_position; kwargs...)
+    gl = GridLayout(1, 2)
+    slider = gl[1, 1] = LSlider(scene; kwargs...)
+
+    value_text = gl[1, 2] = LText(scene, text = lift(s -> "$(s)", slider.value))
+    grid_layout[grid_position...] = gl
+    return slider
+end
+
+"""
+Make a set of sliders for function keyword arguments.
+The syntax for arguments is :name=((min_max), [default], [:log])
+"""
+function slider_set(scene, parent_layout, location; kwargs...)
+    n_args = length(kwargs)
+    layout = GridLayout(n_args, 3)
+    dict_vals = []
+    is_log = falses(length(kwargs))
+    for (i, (argname, argvals)) in enumerate(kwargs)
+        arg_range = argvals[1]
+        is_log = false
+        if length(argvals) < 2
+            arg_def = arg_range[length(arg_range)÷2]
+        else
+            arg_def = argvals[2]
+            if length(argvals) == 3 && argvals[3] == :log
+                is_log = true
+            end
+        end
+
+        layout[i, 1] = LText(scene, text = String(argname), halign = :right)
+        sl = layout[i, 2] = LSlider(scene, range = arg_range, startvalue = arg_def)
+
+        if is_log
+            node_val = lift(x -> 10^x, sl.value)
+        else
+            node_val = sl.value
+        end
+
+        push!(dict_vals, lift(Pair, AbstractPlotting.Node(argname), node_val))
+        layout[i, 3] = LText(scene, text = lift(s -> "$s", node_val), halign = :left)
+    end
+    parent_layout[location...] = layout
+
+    lift_dict = lift(dict_vals...) do (dvals...)
+        return Dict(dvals...)
+    end
+    return lift_dict
+end
+
+
+function heatmap_mousehover(ax, dimensions)
+    return lift(events(ax.scene).mouseposition) do pos
+
+        pos = transferrects(pos, ax.scene.px_area[], ax.limits[])
+        return if AbstractPlotting.is_mouseinside(ax.scene)
+            return tuple(max.(min.(ceil.(Int, pos), dimensions), 1)...)
+        else
+            return 1, 1
+        end
+    end
+
+end
+
+function heatmap_mouseclick(ax, dimensions)
+    old_position = AbstractPlotting.Node((1, 1))
+    on(events(ax.scene).mousebuttons) do btns
+        return if AbstractPlotting.Mouse.left ∈ btns
+            pos_m = events(ax.scene).mouseposition[]
+
+            pos = transferrects(pos_m, ax.scene.px_area[], ax.limits[])
+            if AbstractPlotting.is_mouseinside(ax.scene)
+                old_position[] = tuple(max.(min.(ceil.(Int, pos), dimensions), 1)...)
+            end
+        end
+    end
+
+    return old_position
+end
