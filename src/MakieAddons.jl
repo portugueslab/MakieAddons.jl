@@ -12,6 +12,6 @@ include("interaction.jl")
 include("stack_browser.jl")
 include("annotation_fix.jl")
 
-export hidealldecorations!, polar_plot!, TERNARY_COLORS, add_rectangle_selector!, textlayer!, browse_stack
+export hidealldecorations!, polar_plot!, TERNARY_COLORS, add_rectangle_selector!, textlayer!, browse_stack, close_poly
 
 end # module
